@@ -38,7 +38,7 @@ public class Agent extends Thread{
 		//read profiles from profile's file 
 		Profile profile1 = new Profile();
 		Profile profile2 = new Profile();
-		_filesHandler.readProfiles(profile1, profile2);
+		_filesHandler.readProfiles(_activity, profile1, profile2);
 
 		//creating feature manager
 		FeatureManagerWrapper.setContext(context);

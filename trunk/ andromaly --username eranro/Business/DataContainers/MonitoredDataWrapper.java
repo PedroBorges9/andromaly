@@ -1,10 +1,17 @@
 package andromaly.main.Business.DataContainers;
 
+import static org.xmlpull.v1.XmlPullParser.END_TAG;
+import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.text.TextUtils;
 import andromaly.main.Business.AnomalyDetector.AnomalyDetectorConstants;
 import dt.fe.MonitoredData;
 import dt.fe.ParcelableDate;
@@ -43,6 +50,10 @@ public class MonitoredDataWrapper extends MonitoredData {
 		super(data.getName(), data.getValue(), data.getStartTime(), data.getEndTime());
 		fixNullValue();
 		//TODO do we need to copy the extra bundle also?
+	}
+	
+	public MonitoredDataWrapper(){
+		super("", 0,null,null);
 	}
 	
 	private void fixNullValue(){
@@ -99,13 +110,22 @@ public class MonitoredDataWrapper extends MonitoredData {
     }
 	
 	public void writeToOutput(java.io.Writer osw) throws IOException{
-		osw.write("<MonitoredData> ");
-		osw.write("<name>" + getName() + "</name>");
-		osw.write("<value>" + getValue() + "</value>");
+		osw.write("<MonitoredData ");
+		osw.write("name=\"" + getName() + "\"");
+		osw.write(" value=\"" + getValue() + "\"");
+//		osw.write("<name>" + getName() + "</name>");
+//		osw.write("<value>" + getValue() + "</value>");
 //		osw.write("\t<startTime>" + getStartTime() + "</startTime>\n");
 //		osw.write("\t<endTime>" + getEndTime() + "</endTime>\n");
-		osw.write(" </MonitoredData>\n");
+		osw.write(" />\n");
 		osw.flush();
 	}
+	
+    public boolean readFromInput(XmlPullParser xpp){
+			this._name = xpp.getAttributeValue(0);
+			this._value = xpp.getAttributeValue(1);
+			//System.out.println("created monitored data: " + this._name + ", " + this._value);
+			return true;
+    }
 	
 }

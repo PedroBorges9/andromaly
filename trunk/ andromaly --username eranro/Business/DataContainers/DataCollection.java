@@ -1,12 +1,19 @@
 
 package andromaly.main.Business.DataContainers;
 
+import static org.xmlpull.v1.XmlPullParser.END_TAG;
+import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dt.fe.MonitoredData;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
+import android.text.TextUtils;
+
+import dt.fe.MonitoredData;
 
 public class DataCollection extends ArrayList<MonitoredDataWrapper> { 
     
@@ -19,6 +26,36 @@ public class DataCollection extends ArrayList<MonitoredDataWrapper> {
     	for(MonitoredData feature : data){
     		this.add(new MonitoredDataWrapper(feature));
     	}
+    }
+    
+    public boolean readFromInput(XmlPullParser xpp){
+		try {
+			int eventType = xpp.next();
+			MonitoredDataWrapper md;
+			
+			while (eventType != END_TAG) {
+				if (eventType == START_TAG) {
+					String name = xpp.getName();
+					if (TextUtils.isEmpty(name)) {
+						continue;
+					} else if (name.equalsIgnoreCase("monitoreddata")) {
+						md = new MonitoredDataWrapper();
+						md.readFromInput(xpp);
+						this.add(md);
+						xpp.next();
+					}
+				}
+				eventType = xpp.next();
+			}
+
+			return true;
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
     }
     
 	public double compare(DataCollection other){
