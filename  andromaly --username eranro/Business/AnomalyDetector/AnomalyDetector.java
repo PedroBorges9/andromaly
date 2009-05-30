@@ -56,7 +56,7 @@ public abstract class AnomalyDetector {
 
 	private void checkTransition(DataCollection data) {
 		vectorsCount++;
-		System.out.print("#" + vectorsCount);
+		System.out.print(",#" + vectorsCount + ",");
 		//System.out.println("vectorsCount = " + vectorsCount);
 		// if num of collected vectors reached max limit -> switch to monitoring
 		if (vectorsCount >= AnomalyDetectorConstants.getMaxVectorTransition()) {

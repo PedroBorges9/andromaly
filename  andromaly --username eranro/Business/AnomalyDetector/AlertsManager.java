@@ -3,7 +3,7 @@ package andromaly.main.Business.AnomalyDetector;
 
 import andromaly.main.Business.Lock.LockFactory;
 import andromaly.main.Business.Lock.LockInterface;
-import andromaly.main.Persistance.Configurations;
+import andromaly.main.Presentation.EditPreferences;
 
 public class AlertsManager {
 
@@ -21,7 +21,7 @@ public class AlertsManager {
         double newAvg = deviation*k + movingAvg*(1-k);
         System.out.println("recieved deviation: " + deviation);
         System.out.println("new deviation avg: " + newAvg);
-        if (newAvg > Configurations.allowedDeviationLimit){
+        if (newAvg > EditPreferences.getAllowedDeviationLimit()){
            resetAvg();
            lockApp.lock();
            //return false;
@@ -38,11 +38,7 @@ public class AlertsManager {
     }
 
     public double getAllowedDeviationLimit() {
-        return Configurations.allowedDeviationLimit;
-    }
-
-    public void setAllowedDeviationLimit(double allowedDeviationLimit) {
-    	Configurations.allowedDeviationLimit = allowedDeviationLimit;
+        return EditPreferences.getAllowedDeviationLimit();
     }
 
     public void setLockApp(LockInterface lockApp) {

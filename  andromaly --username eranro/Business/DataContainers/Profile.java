@@ -23,7 +23,7 @@ public class Profile extends Vector<DataCollection> {
 	public String toString(){
 		String res = "====== Profile ======\n";
 		for (DataCollection dc : this){
-			res += dc.toString();
+			res += dc.getValuesString();
 		}
 		return res;
 	}

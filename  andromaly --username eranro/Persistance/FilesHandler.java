@@ -65,12 +65,12 @@ public class FilesHandler {
 		Configurations.state = State.valueOf(pfile.getProperty("state"));
 
 		// alerts manager properties
-		Configurations.allowedDeviationLimit = Double.valueOf(pfile
-				.getProperty("allowed_deviation_limit"));
+//		Configurations.allowedDeviationLimit = Double.valueOf(pfile
+//				.getProperty("allowed_deviation_limit"));
 
 		// agent properties
-		Configurations.agentLoopTime = Long.valueOf(pfile
-				.getProperty("agent_loop_time_in_ms"));
+//		Configurations.agentLoopTime = Long.valueOf(pfile
+//				.getProperty("agent_loop_time_in_ms"));
 
 		return true;
 	}

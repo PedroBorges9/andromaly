@@ -2,7 +2,6 @@ package andromaly.main.Business;
 
 import android.app.Activity;
 import android.content.Context;
-import andromaly.main.FeatureManagerWrapper;
 import andromaly.main.Business.AnomalyDetector.AlertsManager;
 import andromaly.main.Business.AnomalyDetector.AnomalyDetector;
 import andromaly.main.Business.AnomalyDetector.AnomalyDetectorConstants;
@@ -12,6 +11,7 @@ import andromaly.main.Business.DataContainers.DataCollection;
 import andromaly.main.Business.DataContainers.Profile;
 import andromaly.main.Persistance.Configurations;
 import andromaly.main.Persistance.FilesHandler;
+import andromaly.main.Presentation.EditPreferences;
 
 public class Agent extends Thread{
 	
@@ -21,7 +21,7 @@ public class Agent extends Thread{
 	private AlertsManager _alertsManager;
 	private Context _context;
 	private Activity _activity;
-	private boolean _agentActive; //TODO add agentActive switch
+	private boolean _agentActive;
 	
 	public Agent(Context context, Activity activity) {
 		
@@ -44,8 +44,6 @@ public class Agent extends Thread{
 		FeatureManagerWrapper.setContext(context);
 		_featureManager = FeatureManagerWrapper.getInstance();
 		_featureManager.initialize();
-
-		//TODO listen to keyboard toggling -> change current profile
 
 		//init features constants 
 		AnomalyDetectorConstants.initFeaturesConstants();
@@ -75,35 +73,34 @@ public class Agent extends Thread{
 			if (data == null){
 				System.out.print("Data is null)");
 			}else{
-				System.out.print("\n" + data.toString());
+				System.out.print("\n" + data.getValuesString());
 			}
 			
 			//calculating deviation
 			double deviation = _anomalyDetector.reciveMonitoredData(data);
-			System.out.print("\t=> current dev:" + deviation);
+			System.out.print("\t\tcurrent dev: ," + deviation + ",");
 			
 			//on monitoring mode -> send deviation to alerts manager
 			if (deviation >0){
 				double newAvg = _alertsManager.receiveDeviation(deviation);
-				System.out.print("\t=> dev avg:" + newAvg);
+				System.out.print("\t\tdev avg: ," + newAvg + ",");
 			}
 			else{
-				System.out.print("\t=> recieved deviation: " + deviation);
-				System.out.print("\t=> not sending to alertsManager");
+				System.out.print("\t\tnot sending to alertsManager");
 			}
 			
 			System.out.println("");
 			
 			try {
 				//System.out.println("going to sleep");
-				Thread.sleep(Configurations.agentLoopTime);
+				//System.out.println("sleeping time: " + EditPreferences.getAgentLoopTime());
+				Thread.sleep(EditPreferences.getAgentLoopTime());
 			} catch (InterruptedException e) {
 				System.err.println("error while sleeping in agent loop");
 				e.printStackTrace();
 			}
 			
 			//TODO backup profiles every several loops
-			
 		}
 
 		//When exiting the loop - shutting down features extraction
@@ -117,7 +114,11 @@ public class Agent extends Thread{
 	/**************************
 	 * Settors & Gettors
 	 **************************/
-
+	
+	public boolean isActive(){
+		return _agentActive;
+	}
+	
 	public void stopAgentLoop(){
 		_agentActive = false;
 	}
@@ -127,11 +128,5 @@ public class Agent extends Thread{
 		Profile p2 = _anomalyDetector.getProfile2();
 		_filesHandler.backupProfiles(_activity, p1, p2);
 	}
-	
-//	public void exportProfiles(){
-//		Profile p1 = _anomalyDetector.getProfile1();
-//		Profile p2 = _anomalyDetector.getProfile2();
-//		_filesHandler.exportProfiles(_activity, p1, p2, "profilesExport.xml");
-//	}
 	
 }
