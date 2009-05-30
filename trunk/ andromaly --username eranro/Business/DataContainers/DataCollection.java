@@ -103,7 +103,7 @@ public class DataCollection extends ArrayList<MonitoredDataWrapper> {
 	}
 	
 	public String getValuesString(){
-		String res = "{";
+		String res = "{,";
 		for (MonitoredDataWrapper md : this){
 			res += md.getValue() + ",\t";
 		}
